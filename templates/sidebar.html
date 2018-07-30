@@ -23,10 +23,14 @@
                                 <li class="list-group-item">
                                     <a href="#">Channels<i class="glyphicon glyphicon-plus pull-right" id="plus" data-toggle="modal" data-target="#myModal"></i></a>
                                 </li>
-
                                 <li class="list-group-item">
                                     <a href="#">General</a>
                                 </li>
+                                {% for channel in channels %}
+                                    <li class="list-group-item">
+                                    <a href="{{ channel.channel_id }}">{{ channel.name }}</a>
+                                </li>
+                                {% endfor %}
                             </ul>
 
                         </div>

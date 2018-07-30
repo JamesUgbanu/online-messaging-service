@@ -3,6 +3,10 @@
                 localStorage.setItem('display_name', "null");
 
 document.addEventListener('DOMContentLoaded', () => {
+
+                // Connect to websocket
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
                 //get display name from local storage
                 let storageValue = localStorage.getItem('display_name');
                 //show display name on profile
@@ -54,6 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     else
                         document.querySelector('#mybtn').disabled = true;
                     };
+
+                    // When connected, configure button
+        socket.on('connect', () => {
+
                 //Add New channel
                  document.querySelector('#mybtn').onclick = function() {
                         // Initialize new request
@@ -76,13 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 error.innerHTML = `${data.error}`;
                             }
                             else {
-                                const li = document.createElement('li');
-                                li.className = "list-group-item";
-                                const aTag = document.createElement('a');
-                                aTag.setAttribute('href',`${data.channel_id}`);
-                                aTag.innerHTML = `${data.channel.name}`;
-                                li.appendChild(aTag);
-                              document.querySelector('#channel-list').append(li);
+
+                            socket.emit('channel added', data);
                               //display success
                                 error.innerHTML = "Added Successfully";
                             }
@@ -96,6 +99,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         request.send(data);
                         return false;
                     };
+                  });
+
+                 // When a new channel is announced, add to the list of channels
+         socket.on('display channel', data => {
+                    let count = data.channel.length - 1;
+                    console.log(data.channel)
+
+                            const li = document.createElement('li');
+                          li.className = "list-group-item";
+                          const aTag = document.createElement('a');
+                          aTag.setAttribute('href',`${data.channel[count].channel_id}`);
+                          aTag.innerHTML = `${data.channel[count].name}`;
+                          li.appendChild(aTag);
+                          document.querySelector('#channel-list').append(li);
+
+
+            });
 
             });
 //

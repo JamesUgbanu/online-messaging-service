@@ -6,6 +6,10 @@ import string
 import random
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+socketio = SocketIO(app)
+
+
 channels = {}
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
@@ -13,41 +17,41 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    if "channel" in channels:
+        data = channels["channel"]
+    else:
+        data = channels
+
+    return render_template("index.html", channels=data)
 
 
 @app.route("/channel", methods=["POST"])
 def channel():
     # Query for channel input
     channelname = request.form.get("channel")
-
     random = id_generator()
+
     if len(channels) == 0:
         item = {
-            "channel_id": random,
-            "channel":
-                {"name": channelname}
-
-        }
+            "channel": [{"channel_id": random, "name": channelname}]
+             }
         channels.update(item)
-        return jsonify(item)
+        return jsonify(channels)
     else:
-        for key, value in channels["channel"].items():
-
-            if value == channelname:
-
+        for value in channels["channel"]:
+            if value["name"] == channelname:
+                print(channelname)
                 return jsonify({"error": "Display name already exist"})
             else:
-                item = {
-                    "channel_id": random,
-                    "channel":
-                        {"name": channelname}
-
-                }
-                channels.update(item)
-                return jsonify(item)
+                item = {"channel_id": random, "name": channelname}
+                print(channelname)
+                channels["channel"].append(item)
+            return jsonify(channels)
 
 
+@socketio.on("channel added")
+def broadcast(data):
+        emit("display channel", data, broadcast=True)
 
 
 if __name__ == "__main__":
