@@ -4,40 +4,24 @@
 {% block body %}
 <div class="container fill">
 
-
-                    {% include 'registration.html' %}
-
+                 <div id="sidebar" class="row chat-wrap">
+                     <!-- Sidebar Section -->
                     {% include 'sidebar.html' %}
+                     <!-- Message Section -->
+                    {% include 'messages.html' %}
+                 </div>
 
-         <! -- Modal -->
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" >
-                                        <div class="modal-dialog">
-                                          <div class="modal-content">
+                 <! -- Modal -->
+                {% include 'modal.html' %}
 
-                                            <!-- Modal Header -->
-                                            <div class="modal-header">
-                                            <h3 class="text-center"><span class="modal-title">Create a Channel</span></h3>
-                                              <button type="button" class="close" data-dismiss="modal">×</button>
-                                            </div>
-
-                                            <!-- Modal body -->
-                                            <div class="modal-body">
-                                            <p class="text-intro">Channel Name</p>
-                                                <div class="alert error"></div>
-                                            <div class="form-div">
-                                              <div class="form-group">
-                                                <input id="channel" name="channel-input" type="text" class="form-control" placeholder="e.g leads">
-                                              </div>
-                                                 <button type="submit" id="mybtn" class="btn btn-warning btn-block">Submit</button>
-
-                                            </div>
-                                            </div>
-
-                                          </div>
-                                        </div>
-                                </div>
 </div>
 
 
+<script>
+        //get display name from local storage
+        let storageValue = localStorage.getItem('display_name');
+        //show display name on profile
+        document.querySelector('#name').innerHTML = storageValue;
 
+</script>
 {% endblock %}

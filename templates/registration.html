@@ -1,17 +1,47 @@
-	<div class="row" id="registration">
+{% extends "layout.html" %}
+{% block title %}Registration{% endblock %}
+
+{% block body %}
+<div class="container fill">
+
+
+	<div class="row">
                     <div class="col-lg-6 col-lg-offset-3">
 		                    <h2 class="text-center">Enter Display Name</h2>
-
+                    <form action="{{ url_for('register') }}" method="post">
                         <div class="input-group input-group-lg">
                           <span class="input-group-addon">#</span>
-                          <input type="text" id="display_name" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+                          <input type="text" id="display_name" name="display_name" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
                             <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" id="submit">Submit</button>
+                                <button class="btn btn-default" type="submit" id="enter-name">Submit</button>
                               </span>
                         </div>
-
+                     </form>
                 </div>
         <ul id="tasks">
+          <p>{{ error }}</p>
         </ul>
-
      </div>
+
+    </div>
+<script>
+         // Set display name value of counter to null
+            if (!localStorage.getItem('display_name'))
+                 localStorage.setItem('display_name', "null");
+        document.querySelector('#enter-name').disabled = true;
+        // Enable button only if there is text in the input field
+        document.querySelector('#display_name').onkeyup = () => {
+            if (document.querySelector('#display_name').value.length > 3)
+                document.querySelector('#enter-name').disabled = false;
+            else
+                document.querySelector('#enter-name').disabled = true;
+        };
+
+        document.querySelector('#enter-name').onclick = function () {
+            // Create new item for list
+            const displayName = document.querySelector('#display_name').value;
+            // Save to local storage
+                localStorage.setItem('display_name', displayName);
+        };
+</script>
+{% endblock %}

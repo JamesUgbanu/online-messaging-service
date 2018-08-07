@@ -18,30 +18,35 @@
                 </div>
 
                 <!--Messages-->
-                <div class="row content-wrap messages">
-                    <div class="msg">
+                <div id="messages" class="row content-wrap messages">
+                    {% for message in messages %}
+                        <div class="msg">
                         <div class="media-body">
-                            <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
-
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="col-sm-11">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu pulvinar magna. Phasellus semper scelerisque purus, et semper nisl lacinia sit amet. Praesent venenatis turpis vitae purus semper, eget sagittis velit venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos...</small>
+                            <small class="pull-right time"><i class="fa fa-clock-o"></i>{{ message.time }}</small>
+                            <h5 class="media-heading">{{ message.displayName }}</h5>
+                            <small class="col-sm-11">{{ message.text }}</small>
                         </div>
-                    </div>
-
-                </div>
-
+                         </div>
+                    {% endfor %}
+                     </div>
+             <!-- send-message-->
                 <!--Message box & Send Button-->
+                <form id="send-message">
                 <div class="row send-wrap">
+
                     <div class="send-message">
                         <div class="message-text">
-                            <textarea class="no-resize-bar form-control" rows="2" placeholder="Write a message..."></textarea>
+                            <textarea id="message" name="message" class="no-resize-bar form-control" rows="2" placeholder="Write a message..."></textarea>
                         </div>
+                       <input type="hidden" id="channel-id" name="channel-id" value="{{ channel_id }}">
+                         <input type="hidden" id="display-name" name="display-name" value="">
                         <div class="send-button">
-                            <a class="btn">Send <i class="fa fa-send"></i></a>
+                            <button type="submit" class="btn">Send<i class="fa fa-send"></i></button>
                         </div>
                     </div>
-                </div>
 
+                </div>
+               </form>
             </div>
 
             <!--Sliding Menu / Conversation Members-->

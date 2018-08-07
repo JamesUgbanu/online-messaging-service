@@ -1,50 +1,9 @@
- // Set display name value of counter to null
-            if (!localStorage.getItem('display_name'))
-                localStorage.setItem('display_name', "null");
 
 document.addEventListener('DOMContentLoaded', () => {
 
                 // Connect to websocket
-    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    let socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
-                //get display name from local storage
-                let storageValue = localStorage.getItem('display_name');
-                //show display name on profile
-                document.querySelector('#name').innerHTML = storageValue;
-
-                //Check if user has a display name
-                    if(storageValue == "null") {
-                        document.querySelector('#registration').style.display="block";
-                    } else {
-                        document.querySelector('#sidebar').style.display="block";
-                    }
-                // By default, submit button is disabled
-                document.querySelector('#submit').disabled = true;
-
-                // Enable button only if there is text in the input field
-                document.querySelector('#display_name').onkeyup = () => {
-                    if (document.querySelector('#display_name').value.length > 3)
-                        document.querySelector('#submit').disabled = false;
-                    else
-                        document.querySelector('#submit').disabled = true;
-                };
-
-                document.querySelector('#submit').onclick = function() {
-                    // Create new item for list
-                    const displayName = document.querySelector('#display_name').value;
-
-                         // Clear input field and disable button again
-                    document.querySelector('#display_name').value = '';
-                    document.querySelector('#submit').disabled = true;
-
-                            // Save to local storage
-                         localStorage.setItem('display_name', displayName)
-                            // refresh page
-                            window.location.reload();
-
-                    // Stop form from submitting
-                  return false;
-                };
 
 
                     document.querySelector('#plus').onclick = () => {
@@ -59,11 +18,47 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.querySelector('#mybtn').disabled = true;
                     };
 
-                    // When connected, configure button
+
+
+                       // When connected, configure button
         socket.on('connect', () => {
 
+                   //  Add New post
+                 document.querySelector('#send-message').onsubmit = function() {
+                        // Initialize new request
+                        const xhr = new XMLHttpRequest();
+                       const message = document.querySelector('#message').value;
+                       const id = document.querySelector('#channel-id').value;
+                        const name = document.querySelector('#display-name').value = storageValue;
+
+                         // Clear input field
+                    document.querySelector('#message').value = '';
+
+                        xhr.open('POST', '/message');
+                        // Callback function for when request completes
+                        xhr.onload = () => {
+
+                            // Extract JSON data from request
+                            const messages = JSON.parse(xhr.responseText);
+                                socket.emit('message added', messages);
+
+                            }
+
+                         // Add data to send with request
+                        const form = new FormData();
+                       form.append('message', message);
+                       form.append('channel-id', id);
+                       form.append('display-name', name);
+                        // Send request
+                        xhr.send(form);
+                        return false;
+                    };
+                  });
+
+
+
                 //Add New channel
-                 document.querySelector('#mybtn').onclick = function() {
+                 document.querySelector('#mybtn').onsubmit = function() {
                         // Initialize new request
                         const request = new XMLHttpRequest();
                        const channel = document.querySelector('#channel').value;
@@ -85,9 +80,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                             else {
 
-                            socket.emit('channel added', data);
+                            const li = document.createElement('li');
+                          li.className = "list-group-item";
+                          const aTag = document.createElement('a');
+                          aTag.setAttribute('href',`messages/${data.channel_id}`);
+                          aTag.innerHTML = `${data.name}`;
+                          li.appendChild(aTag);
+                          document.querySelector('#channel-list').append(li);
+
                               //display success
-                                error.innerHTML = "Added Successfully";
+                               // error.innerHTML = "Added Successfully";
+                                   // refresh page
+                                 window.location.reload();
                             }
                         }
 
@@ -99,23 +103,37 @@ document.addEventListener('DOMContentLoaded', () => {
                         request.send(data);
                         return false;
                     };
-                  });
-
-                 // When a new channel is announced, add to the list of channels
-         socket.on('display channel', data => {
-                    let count = data.channel.length - 1;
-                    console.log(data.channel)
-
-                            const li = document.createElement('li');
-                          li.className = "list-group-item";
-                          const aTag = document.createElement('a');
-                          aTag.setAttribute('href',`${data.channel[count].channel_id}`);
-                          aTag.innerHTML = `${data.channel[count].name}`;
-                          li.appendChild(aTag);
-                          document.querySelector('#channel-list').append(li);
 
 
-            });
+                     // When a new message is announced, add to the list of messages
+         socket.on('display message', data => {
+
+                // Update the result div
+                    const msg = document.createElement('div');
+                    msg.className = "msg";
+                    const media = document.createElement('div');
+                    media.className = "media-body";
+                      const small = document.createElement('small');
+                      small.ClassName = "pull-right";
+                      small.className = "time";
+                      const i = document.createElement('i');
+                       i.ClassName = "fa fa-clock-o";
+                       small.appendChild(i)
+                            i.innerText = `${data.time }`;
+                      const h5 = document.createElement('h5');
+                            h5.className = "media-heading";
+                            h5.innerHTML = `${data.displayName}`;
+                        const small2 = document.createElement('small')
+                            small2.className = "col-sm-11";
+                        small2.innerHTML = `${data.text}`;
+                            msg.appendChild(media);
+                            msg.appendChild(small);
+                            msg.appendChild(h5);
+                            msg.appendChild(small2);
+                          document.querySelector('#messages').append(msg);
+
+
+                });
 
             });
 //

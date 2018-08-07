@@ -1,8 +1,4 @@
 /*********** BODY **************/
-/** Hide both registration and sidebar **/
-#registration, #sidebar {
-    display: none;
-}
 /* Change Body Attributes */
 html, body {
     font-family: 'Open Sans', serif;
