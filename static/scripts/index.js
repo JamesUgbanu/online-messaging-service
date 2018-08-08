@@ -1,10 +1,14 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+                    let pathname = window.location.pathname;
+
+          let regex = /([A-Z])\w+/g;
+
+          let test = pathname.match(regex);
+
                 // Connect to websocket
     let socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-
-
 
                     document.querySelector('#plus').onclick = () => {
                         document.querySelector('#mybtn').disabled = true;
@@ -108,7 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
                      // When a new message is announced, add to the list of messages
          socket.on('display message', data => {
 
-                // Update the result div
+              //Show on a channel
+                    if(data.channel_id == test[0]) {
+                         // Update the result div
                     const msg = document.createElement('div');
                     msg.className = "msg";
                     const media = document.createElement('div');
@@ -131,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             msg.appendChild(h5);
                             msg.appendChild(small2);
                           document.querySelector('#messages').append(msg);
-
+                    }
 
                 });
 

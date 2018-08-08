@@ -4,11 +4,10 @@
 
             <!--Main Content / Message List-->
             <div class="col-sm-9 section-wrap" id="Messages">
-
                 <!--Header-->
                 <div class="row header-wrap">
                     <div class="chat-header col-sm-12">
-                        <h4>General</h4>
+                        <h4>{{ channelTitle.name }}</h4>
                         <div class="header-button">
                             <a class="btn pull-right info-btn">
                                 <i class="fa fa-info-circle fa-lg"></i>
@@ -28,7 +27,7 @@
                         </div>
                          </div>
                     {% endfor %}
-                     </div>
+                </div>
              <!-- send-message-->
                 <!--Message box & Send Button-->
                 <form id="send-message">
@@ -55,7 +54,7 @@
                 <!--Header-->
                 <div class="row header-wrap">
                     <div class="chat-header col-sm-12">
-                        <h4>Currently in the Channel</h4>
+                        <h4>Users Currently in the Channel</h4>
                         <div class="header-button">
                             <a class="btn pull-right info-btn">
                                 <i class="fa fa-close"></i>

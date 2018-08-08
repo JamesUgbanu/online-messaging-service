@@ -22,7 +22,20 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 @app.route("/")
 def index():
-    return render_template("registration.html")
+    channel_id = "XY8YE"
+    if not session.get('user'):
+        return render_template('registration.html')
+    else:
+        return redirect(url_for("messages", channel_id=channel_id))
+
+# @app.after_request
+# def store_visted_urls():
+#     session['urls'].append(request.url)
+#     if len(session['urls']) > 5:
+#         session['urls'].pop(0)
+#     session.modified = True
+#     print(session['url'])
+
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -32,6 +45,9 @@ def register():
     if count == 0:
         user = {"user_id": count + 1, "display_name": displayName}
         channels["user"].append(user)
+        session['user'] = True
+        session['user'] = displayName
+        session['urls'] = []
         return redirect(url_for("messages", channel_id=channel_id))
     else:
         for value in channels["user"]:
@@ -40,6 +56,9 @@ def register():
                 return render_template("registration.html", error=error)
         user = {"user_id": count + 1, "display_name": displayName}
         channels["user"].append(user)
+        session['user'] = True
+        session['user'] = displayName
+        session['urls'] = []
         return redirect(url_for("messages", channel_id=channel_id))
 
 
@@ -48,8 +67,9 @@ def register():
 @app.route("/messages/<string:channel_id>")
 def messages(channel_id):
     messages = list(filter(lambda x: x["channel_id"] == channel_id, channels["message"]))
-    #
-    return render_template("index.html", channels=channels, channel_id=channel_id, messages=messages)
+    channelTitle = list(filter(lambda x: x["channel_id"] == channel_id, channels["channel"]))
+
+    return render_template("index.html", channels=channels, channel_id=channel_id, messages=messages, channelTitle=channelTitle[0])
 
 
 @app.route("/channel", methods=["POST"])
@@ -74,7 +94,7 @@ def chat():
     text = request.form.get("message")
     displayname = request.form.get("display-name")
 
-    if len(channels["message"]) >= 3:
+    if len(channels["message"]) >= 100:
         channels["message"].pop(0)
 
     output = {"channel_id": channel_id, "text": text, "time": now, "displayName": displayname}
