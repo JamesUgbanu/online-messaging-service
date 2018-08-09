@@ -120,22 +120,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     const media = document.createElement('div');
                     media.className = "media-body";
                       const small = document.createElement('small');
-                      small.ClassName = "pull-right";
-                      small.className = "time";
+                      small.ClassName = "pull-right time";
                       const i = document.createElement('i');
                        i.ClassName = "fa fa-clock-o";
-                       small.appendChild(i)
+                       small.appendChild(i);
                             i.innerText = `${data.time }`;
                       const h5 = document.createElement('h5');
                             h5.className = "media-heading";
                             h5.innerHTML = `${data.displayName}`;
-                        const small2 = document.createElement('small')
+                        const small2 = document.createElement('small');
                             small2.className = "col-sm-11";
                         small2.innerHTML = `${data.text}`;
+                        const button = document.createElement('button');
+                                button.className = "btn btn-danger pull-right";
+                         const x = document.createElement('i');
+                                x.className = "fa fa-close";
+                                button.append(x);
+
                             msg.appendChild(media);
                             msg.appendChild(small);
                             msg.appendChild(h5);
                             msg.appendChild(small2);
+                            msg.appendChild(button)
                           document.querySelector('#messages').append(msg);
                     }
 

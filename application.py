@@ -36,7 +36,6 @@ def index():
 #     session.modified = True
 #     print(session['url'])
 
-
 @app.route("/register", methods=["POST"])
 def register():
     displayName = request.form.get("display_name")
@@ -62,12 +61,11 @@ def register():
         return redirect(url_for("messages", channel_id=channel_id))
 
 
-
-
 @app.route("/messages/<string:channel_id>")
 def messages(channel_id):
     messages = list(filter(lambda x: x["channel_id"] == channel_id, channels["message"]))
     channelTitle = list(filter(lambda x: x["channel_id"] == channel_id, channels["channel"]))
+    id = list(map(lambda x: print(x), messages))
 
     return render_template("index.html", channels=channels, channel_id=channel_id, messages=messages, channelTitle=channelTitle[0])
 
@@ -93,14 +91,18 @@ def chat():
     now = datetime.datetime.now()
     text = request.form.get("message")
     displayname = request.form.get("display-name")
+    count = len(channels["message"])
 
     if len(channels["message"]) >= 100:
         channels["message"].pop(0)
 
-    output = {"channel_id": channel_id, "text": text, "time": now, "displayName": displayname}
+    output = {"id": count + 1, "channel_id": channel_id, "text": text, "time": now, "displayName": displayname}
     channels["message"].append(output)
     return jsonify(output)
 
+# @app.route("/delete", methods=["POST"])
+# def delete():
+#
 
 @socketio.on("message added")
 def broadcast(data):
