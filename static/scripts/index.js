@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             msg.appendChild(small);
                             msg.appendChild(h5);
                             msg.appendChild(small2);
-                            msg.appendChild(button)
+                            data.displayName == storageValue ? msg.appendChild(button) : "";
                           document.querySelector('#messages').append(msg);
                     }
 

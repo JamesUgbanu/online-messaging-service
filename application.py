@@ -41,6 +41,7 @@ def register():
     displayName = request.form.get("display_name")
     count = len(channels["user"])
     channel_id = "XY8YE"
+    session["user"] = displayName
     if count == 0:
         user = {"user_id": count + 1, "display_name": displayName}
         channels["user"].append(user)
