@@ -22,11 +22,11 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 @app.route("/")
 def index():
-    channel_id = "XY8YE"
-    if not session.get('user'):
+    #channel_id = "XY8YE"
+    if not session.get('url'):
         return render_template('registration.html')
     else:
-        return redirect(url_for("messages", channel_id=channel_id))
+        return redirect(url_for("messages", channel_id=session['url']))
 
 # @app.after_request
 # def store_visted_urls():
@@ -44,9 +44,6 @@ def register():
     if count == 0:
         user = {"user_id": count + 1, "display_name": displayName}
         channels["user"].append(user)
-        session['user'] = True
-        session['user'] = displayName
-        session['urls'] = []
         return redirect(url_for("messages", channel_id=channel_id))
     else:
         for value in channels["user"]:
@@ -55,9 +52,6 @@ def register():
                 return render_template("registration.html", error=error)
         user = {"user_id": count + 1, "display_name": displayName}
         channels["user"].append(user)
-        session['user'] = True
-        session['user'] = displayName
-        session['urls'] = []
         return redirect(url_for("messages", channel_id=channel_id))
 
 
@@ -66,6 +60,9 @@ def messages(channel_id):
     messages = list(filter(lambda x: x["channel_id"] == channel_id, channels["message"]))
     channelTitle = list(filter(lambda x: x["channel_id"] == channel_id, channels["channel"]))
     id = list(map(lambda x: print(x), messages))
+    session['url'] = True
+    session['url'] = channel_id
+    print(session['url'])
 
     return render_template("index.html", channels=channels, channel_id=channel_id, messages=messages, channelTitle=channelTitle[0])
 
